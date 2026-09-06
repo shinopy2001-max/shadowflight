@@ -1,0 +1,897 @@
+<title>ShadowFlight</title>
+<meta name="description" content="毎日のシャドーイングで鍛える、旅と日常の英会話速習ボード。iPhoneのホーム画面に追加してアプリのように使えます。">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ShadowFlight">
+<meta name="theme-color" content="#12151a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --bg: #f6f1e7;
+    --surface: #fffdf8;
+    --surface-2: #ece4d2;
+    --ink: #1b2430;
+    --ink-muted: #756b58;
+    --border: #ddd2b8;
+    --amber: #dd8a1f;
+    --amber-ink: #a35c0d;
+    --amber-contrast: #fffaf0;
+    --teal: #1f8f83;
+    --teal-soft: rgba(31,143,131,0.12);
+    --success: #2f8f4e;
+    --success-soft: rgba(47,143,78,0.12);
+    --danger: #b5433a;
+    --danger-soft: rgba(181,67,58,0.12);
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 8px 24px -12px rgba(27,36,48,0.22);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151a;
+      --surface: #1b1f26;
+      --surface-2: #232830;
+      --ink: #f2ede1;
+      --ink-muted: #9aa2ad;
+      --border: #2c323c;
+      --amber: #ffb020;
+      --amber-ink: #ffb020;
+      --amber-contrast: #1b1206;
+      --teal: #4fd8c4;
+      --teal-soft: rgba(79,216,196,0.14);
+      --success: #6fcf7a;
+      --success-soft: rgba(111,207,122,0.14);
+      --danger: #e2695f;
+      --danger-soft: rgba(226,105,95,0.14);
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 30px -12px rgba(0,0,0,0.65);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151a;
+    --surface: #1b1f26;
+    --surface-2: #232830;
+    --ink: #f2ede1;
+    --ink-muted: #9aa2ad;
+    --border: #2c323c;
+    --amber: #ffb020;
+    --amber-ink: #ffb020;
+    --amber-contrast: #1b1206;
+    --teal: #4fd8c4;
+    --teal-soft: rgba(79,216,196,0.14);
+    --success: #6fcf7a;
+    --success-soft: rgba(111,207,122,0.14);
+    --danger: #e2695f;
+    --danger-soft: rgba(226,105,95,0.14);
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 30px -12px rgba(0,0,0,0.65);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, 'Hiragino Kaku Gothic ProN', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  @media (min-width: 560px) {
+    body { background: var(--surface-2); }
+    .app {
+      margin-top: 28px;
+      margin-bottom: 28px;
+      min-height: calc(100vh - 56px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: calc(16px + env(safe-area-inset-top)) 20px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .brand-mark { font-size: 22px; color: var(--amber-ink); }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+  .brand-name {
+    font-family: 'Big Shoulders Display', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .brand-name em { font-style: normal; color: var(--amber-ink); }
+  .brand-tagline { font-size: 11px; color: var(--ink-muted); letter-spacing: 0.03em; }
+
+  .streak-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+  .streak-chip:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .streak-num { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--amber-ink); line-height: 1.1; }
+  .streak-label { font-size: 9px; letter-spacing: 0.08em; color: var(--ink-muted); }
+
+  .board { flex: 1; padding: 20px 20px 24px; }
+
+  .board-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 16px; }
+  .board-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: var(--teal); }
+  .board-title { font-family: 'Big Shoulders Display', sans-serif; font-weight: 800; font-size: 28px; margin: 0; text-wrap: balance; }
+
+  .hint-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--teal-soft);
+    border: 1px solid var(--teal);
+    color: var(--ink);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .hint-banner p { margin: 0; flex: 1; }
+  .hint-dismiss { background: none; border: none; color: var(--ink-muted); font-size: 16px; cursor: pointer; line-height: 1; padding: 2px; flex-shrink: 0; }
+  .hint-dismiss:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  .flight-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .flight-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "gate info status" "gate info progress";
+    gap: 4px 12px;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    animation: flap-in 0.5s ease forwards;
+  }
+  @media (prefers-reduced-motion: reduce) { .flight-row { opacity: 1; animation: none; } }
+  .flight-row:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .gate {
+    grid-area: gate;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--amber-ink);
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 6px 10px;
+    min-width: 44px;
+    text-align: center;
+  }
+  .flight-info { grid-area: info; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .flight-name-en {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .flight-name-ja { font-size: 12px; color: var(--ink-muted); }
+  .flight-progress { grid-area: progress; display: flex; align-items: center; gap: 8px; }
+  .progress-track { flex: 1; height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; min-width: 50px; }
+  .progress-fill { height: 100%; background: var(--amber); border-radius: 3px; }
+  .progress-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  .flight-status { grid-area: status; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 999px; justify-self: end; }
+  .status-scheduled { background: var(--surface-2); color: var(--ink-muted); }
+  .status-boarding { background: var(--teal-soft); color: var(--teal); }
+  .status-landed { background: var(--success-soft); color: var(--success); }
+
+  @keyframes flap-in {
+    from { opacity: 0; transform: translateY(6px) scaleY(0.94); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .ticket {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: var(--shadow);
+  }
+  .ticket-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 12px; }
+  .icon-btn { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; width: 34px; height: 34px; font-size: 16px; color: var(--ink); cursor: pointer; }
+  .icon-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .ticket-gate { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.03em; color: var(--ink-muted); }
+  .ticket-count { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+  .ticket-body { display: flex; flex-direction: column; gap: 8px; text-align: center; padding: 4px 4px 8px; }
+  .phrase-en { font-family: 'Big Shoulders Display', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.3; margin: 0; text-wrap: balance; }
+  .reveal-btn { align-self: center; background: none; border: none; color: var(--teal); font-size: 13px; cursor: pointer; padding: 4px; font-family: 'IBM Plex Sans', sans-serif; }
+  .reveal-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .phrase-ja { margin: 0; font-size: 15px; color: var(--ink); }
+  .phrase-ja.is-hidden { display: none; }
+  .phrase-tip { margin: 2px 0 0; font-size: 12px; color: var(--ink-muted); }
+
+  .waveform { display: flex; align-items: flex-end; justify-content: center; gap: 5px; height: 40px; }
+  .waveform .bar { width: 5px; height: calc(8px + 24px * var(--level, 0.15)); background: var(--teal); border-radius: 3px; transition: height 0.08s ease; }
+  .waveform.is-active .bar { animation: bar-bounce 0.9s ease-in-out infinite; }
+  .waveform.is-active .bar:nth-child(1) { animation-delay: 0s; }
+  .waveform.is-active .bar:nth-child(2) { animation-delay: 0.1s; }
+  .waveform.is-active .bar:nth-child(3) { animation-delay: 0.2s; }
+  .waveform.is-active .bar:nth-child(4) { animation-delay: 0.3s; }
+  .waveform.is-active .bar:nth-child(5) { animation-delay: 0.15s; }
+  @keyframes bar-bounce { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1); } }
+
+  .speed-row { display: flex; gap: 8px; justify-content: center; }
+  .speed-btn { background: var(--surface-2); border: 1px solid var(--border); color: var(--ink-muted); border-radius: 999px; padding: 6px 14px; font-size: 12px; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; }
+  .speed-btn.is-active { background: var(--amber); border-color: var(--amber); color: var(--amber-contrast); font-weight: 600; }
+  .speed-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  .play-btn { background: var(--amber); color: var(--amber-contrast); border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; }
+  .play-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+  .play-btn:active { transform: scale(0.98); }
+
+  .shadow-row { display: flex; gap: 8px; }
+  .record-btn, .playback-btn { flex: 1; border-radius: 10px; padding: 12px; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--surface-2); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif; }
+  .record-btn.is-recording { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+  .playback-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .record-btn:focus-visible, .playback-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  .rate-row { display: flex; gap: 8px; }
+  .rate-btn { flex: 1; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); font-family: 'IBM Plex Sans', sans-serif; }
+  .rate-again { background: var(--surface-2); color: var(--ink); }
+  .rate-mastered { background: var(--success-soft); color: var(--success); border-color: var(--success); }
+  .rate-mastered.is-mastered { background: var(--success); color: var(--amber-contrast); }
+  .rate-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  .nav-row { display: flex; justify-content: space-between; gap: 8px; }
+  .nav-btn { flex: 1; background: none; border: 1px solid var(--border); border-radius: 10px; padding: 10px; color: var(--ink-muted); font-size: 13px; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; }
+  .nav-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; box-shadow: var(--shadow); }
+  .stat-num { font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600; color: var(--amber-ink); font-variant-numeric: tabular-nums; }
+  .stat-label { font-size: 10px; color: var(--ink-muted); letter-spacing: 0.03em; text-align: center; }
+
+  .deck-progress-list { list-style: none; margin: 0 0 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .deck-progress-row { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
+  .deck-progress-gate { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--amber-ink); font-weight: 600; }
+  .deck-progress-name { font-size: 13px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .deck-progress-row .progress-track { min-width: 40px; }
+  .deck-progress-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+  .reset-btn { width: 100%; background: none; border: 1px solid var(--border); color: var(--ink-muted); border-radius: 10px; padding: 12px; font-size: 13px; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; }
+  .reset-btn:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  .tabbar { position: sticky; bottom: 0; display: flex; border-top: 1px solid var(--border); background: var(--surface); padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); gap: 8px; }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; padding: 8px; color: var(--ink-muted); font-size: 11px; cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; border-radius: 10px; }
+  .tab-icon { font-size: 18px; }
+  .tab.is-active { color: var(--amber-ink); background: var(--surface-2); }
+  .tab:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    transform: translate(-50%, 8px);
+    background: var(--ink);
+    color: var(--bg);
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    max-width: 80%;
+    text-align: center;
+    z-index: 50;
+  }
+  .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+</style>
+
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">&#9992;</span>
+      <div class="brand-text">
+        <span class="brand-name">SHADOW<em>FLIGHT</em></span>
+        <span class="brand-tagline">英会話 速習ボード</span>
+      </div>
+    </div>
+    <button class="streak-chip" id="streakChip" type="button" aria-label="学習の記録を見る">
+      <span class="streak-num" id="streakNum">0</span>
+      <span class="streak-label">DAY STREAK</span>
+    </button>
+  </header>
+
+  <main class="board" id="board"></main>
+
+  <nav class="tabbar" id="tabbar">
+    <button class="tab is-active" data-view="decks" type="button">
+      <span class="tab-icon" aria-hidden="true">&#9638;</span>
+      <span>ボード</span>
+    </button>
+    <button class="tab" data-view="progress" type="button">
+      <span class="tab-icon" aria-hidden="true">&#9685;</span>
+      <span>記録</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STORAGE_KEY = "shadowflight_v1";
+  var HINT_KEY = "shadowflight_hint_dismissed";
+
+  var DECKS = [
+    {
+      id: "airport", gate: "A1", nameEn: "AIRPORT & FLIGHTS", nameJa: "空港・搭乗",
+      phrases: [
+        { en: "Could you tell me which gate this flight departs from?", ja: "この便の搭乗ゲートを教えていただけますか？", tip: "ゲート番号を尋ねる定番表現" },
+        { en: "I think I'm going to miss my connecting flight.", ja: "乗り継ぎ便に間に合わなそうです。", tip: "焦りを丁寧に伝える言い方" },
+        { en: "Is there a shuttle bus to the other terminal?", ja: "別のターミナルへのシャトルバスはありますか？", tip: "空港内の移動手段を尋ねる" },
+        { en: "Would it be possible to get an aisle seat?", ja: "通路側の席にしていただくことは可能ですか？", tip: "座席希望を丁寧に伝える" },
+        { en: "My luggage hasn't come out on the belt yet.", ja: "荷物がまだベルトに出てきていません。", tip: "手荷物トラブルを伝える" },
+        { en: "Do I need to fill out a customs form?", ja: "税関申告書は記入が必要ですか？", tip: "入国手続きの確認" },
+        { en: "How long is the layover in Seoul?", ja: "ソウルでの乗り継ぎ時間はどのくらいですか？", tip: "layover=乗り継ぎ待ち時間" },
+        { en: "I'd like to change my seat if that's possible.", ja: "可能であれば座席を変更したいのですが。", tip: "if that's possibleで柔らかく依頼" }
+      ]
+    },
+    {
+      id: "hotel", gate: "B2", nameEn: "HOTEL CHECK-IN", nameJa: "ホテル",
+      phrases: [
+        { en: "I have a reservation under the name Tanaka.", ja: "タナカの名前で予約しています。", tip: "under the name ~ で予約名を伝える" },
+        { en: "Is breakfast included in the room rate?", ja: "朝食は宿泊料金に含まれていますか？", tip: "料金に含まれるか確認する定番" },
+        { en: "Could I get a room on a higher floor?", ja: "高層階の部屋にしていただけますか？", tip: "部屋の希望を伝える" },
+        { en: "What time is checkout tomorrow?", ja: "明日のチェックアウトは何時ですか？", tip: "" },
+        { en: "The Wi-Fi in my room doesn't seem to be working.", ja: "部屋のWi-Fiがつながらないようです。", tip: "doesn't seem to be ~ingで柔らかく報告" },
+        { en: "Could you recommend a good place for dinner nearby?", ja: "この近くで夕食におすすめの場所はありますか？", tip: "" },
+        { en: "I'd like to extend my stay by one more night.", ja: "もう一泊延長したいのですが。", tip: "extend my stay=滞在を延長する" },
+        { en: "Can you store my luggage after I check out?", ja: "チェックアウト後に荷物を預かってもらえますか？", tip: "" }
+      ]
+    },
+    {
+      id: "restaurant", gate: "C3", nameEn: "RESTAURANT & CAFE", nameJa: "レストラン",
+      phrases: [
+        { en: "Could we get a table for two, please?", ja: "2名でテーブルをお願いできますか？", tip: "入店時の定番フレーズ" },
+        { en: "What would you recommend from the menu?", ja: "メニューの中でおすすめは何ですか？", tip: "" },
+        { en: "I'm allergic to peanuts, so could you leave those out?", ja: "ピーナッツアレルギーなので抜いていただけますか？", tip: "アレルギー対応を依頼する" },
+        { en: "Could I get this to go instead?", ja: "これを持ち帰りにしてもらえますか？", tip: "to go=持ち帰り" },
+        { en: "Excuse me, could we get the check, please?", ja: "すみません、お会計をお願いします。", tip: "check=（米）お会計" },
+        { en: "Is this dish spicy?", ja: "この料理は辛いですか？", tip: "" },
+        { en: "Can I get a refill on my coffee?", ja: "コーヒーのおかわりをいただけますか？", tip: "refill=おかわり" },
+        { en: "We're just looking for now, thanks.", ja: "今はまだ見ているだけです、ありがとう。", tip: "声をかけられた時の定番の断り方" }
+      ]
+    },
+    {
+      id: "directions", gate: "D4", nameEn: "GETTING AROUND", nameJa: "街歩き・道案内",
+      phrases: [
+        { en: "Excuse me, how do I get to the nearest station?", ja: "すみません、最寄り駅へはどう行けばいいですか？", tip: "道を尋ねる基本フレーズ" },
+        { en: "Is it within walking distance from here?", ja: "ここから歩いて行ける距離ですか？", tip: "" },
+        { en: "Which line should I take to get downtown?", ja: "中心街に行くにはどの路線に乗ればいいですか？", tip: "" },
+        { en: "Could you point me in the direction of the museum?", ja: "美術館の方向を教えていただけますか？", tip: "" },
+        { en: "How much is a one-day pass for the subway?", ja: "地下鉄の一日券はいくらですか？", tip: "" },
+        { en: "I think I might be lost, actually.", ja: "実は道に迷っているかもしれません。", tip: "遠慮がちに状況を伝える" },
+        { en: "Does this bus stop near the city hall?", ja: "このバスは市役所の近くに止まりますか？", tip: "" },
+        { en: "Is it safe to walk around here at night?", ja: "夜にこの辺りを歩いても安全ですか？", tip: "" }
+      ]
+    },
+    {
+      id: "shopping", gate: "E5", nameEn: "SHOPPING", nameJa: "ショッピング",
+      phrases: [
+        { en: "Do you have this in a different size?", ja: "これの違うサイズはありますか？", tip: "" },
+        { en: "Can I try this on?", ja: "これを試着してもいいですか？", tip: "" },
+        { en: "Is this the final price, or can it be discounted?", ja: "これは最終価格ですか、それとも値引きできますか？", tip: "値引き交渉の切り出し方" },
+        { en: "Do you accept credit cards here?", ja: "ここではクレジットカードは使えますか？", tip: "" },
+        { en: "Could you gift-wrap this, please?", ja: "これをプレゼント用に包んでいただけますか？", tip: "" },
+        { en: "I'm just browsing for now, thank you.", ja: "今は見ているだけです、ありがとう。", tip: "" },
+        { en: "Is there a tax refund counter in this store?", ja: "この店に免税カウンターはありますか？", tip: "" },
+        { en: "Could I get a receipt for this, please?", ja: "レシートをいただけますか？", tip: "" }
+      ]
+    },
+    {
+      id: "smalltalk", gate: "F6", nameEn: "SMALL TALK", nameJa: "雑談",
+      phrases: [
+        { en: "So, what brings you to this city?", ja: "それで、この街には何のお越しですか？", tip: "What brings you ~?で来訪理由を尋ねる" },
+        { en: "How long have you been living here?", ja: "ここにはどのくらい住んでいるんですか？", tip: "" },
+        { en: "The weather's been pretty unpredictable lately, hasn't it?", ja: "最近天気が読めませんよね？", tip: "付加疑問文で共感を誘う" },
+        { en: "What do you usually do on weekends?", ja: "週末は普段何をしていますか？", tip: "" },
+        { en: "That's such a coincidence, small world!", ja: "それはすごい偶然ですね、世間は狭い！", tip: "small world=世間は狭い" },
+        { en: "I've been meaning to try that place everyone's talking about.", ja: "みんなが話しているあの店に行ってみたいと思っていました。", tip: "have been meaning to=～しようと思っていた" },
+        { en: "Do you have any recommendations for things to do around here?", ja: "この辺りでおすすめの過ごし方はありますか？", tip: "" },
+        { en: "It was great catching up with you.", ja: "近況を話せてよかったです。", tip: "別れ際にも使える一言" }
+      ]
+    },
+    {
+      id: "trouble", gate: "G7", nameEn: "HANDLING PROBLEMS", nameJa: "トラブル対応",
+      phrases: [
+        { en: "I think there might be a mistake on this bill.", ja: "この請求書に間違いがあるかもしれません。", tip: "柔らかく指摘する言い方" },
+        { en: "I'm sorry, could you say that a little more slowly?", ja: "すみません、もう少しゆっくり言っていただけますか？", tip: "聞き取れなかった時の定番" },
+        { en: "I seem to have lost my wallet somewhere around here.", ja: "この辺りで財布をなくしてしまったようです。", tip: "" },
+        { en: "Could you call a taxi for me? It's an emergency.", ja: "タクシーを呼んでいただけますか？緊急なんです。", tip: "" },
+        { en: "Sorry to bother you, but I need some help.", ja: "お手数をおかけしますが、助けが必要です。", tip: "" },
+        { en: "This isn't quite what I ordered.", ja: "これは注文したものと違うようです。", tip: "isn't quite ~で柔らかく指摘" },
+        { en: "Where's the nearest pharmacy from here?", ja: "ここから一番近い薬局はどこですか？", tip: "" },
+        { en: "I'd like to report that my phone has been stolen.", ja: "携帯電話が盗まれたことを報告したいのですが。", tip: "警察・窓口での報告表現" }
+      ]
+    },
+    {
+      id: "farewell", gate: "H8", nameEn: "FAREWELLS & THANKS", nameJa: "別れ際・お礼",
+      phrases: [
+        { en: "Thank you so much, you've been a huge help.", ja: "本当にありがとうございます、とても助かりました。", tip: "" },
+        { en: "It was so nice meeting you, take care.", ja: "お会いできてよかったです、お元気で。", tip: "" },
+        { en: "I really appreciate you going out of your way for me.", ja: "わざわざ対応していただき本当に感謝します。", tip: "go out of one's way=わざわざ～する" },
+        { en: "Let's keep in touch, here's my contact.", ja: "連絡を取り合いましょう、これが連絡先です。", tip: "" },
+        { en: "Have a safe trip back home.", ja: "気をつけてお帰りください。", tip: "" },
+        { en: "Thanks again for everything, I owe you one.", ja: "改めて色々とありがとう、借りができました。", tip: "I owe you one=一つ借りができた" },
+        { en: "I hope to see you again sometime.", ja: "またいつか会えるといいですね。", tip: "" },
+        { en: "Take it easy, and good luck with everything.", ja: "お元気で、これからも頑張ってください。", tip: "" }
+      ]
+    }
+  ];
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { mastered: {}, dates: [], reps: 0 };
+      var parsed = JSON.parse(raw);
+      return {
+        mastered: parsed.mastered || {},
+        dates: Array.isArray(parsed.dates) ? parsed.dates : [],
+        reps: typeof parsed.reps === "number" ? parsed.reps : 0
+      };
+    } catch (e) {
+      return { mastered: {}, dates: [], reps: 0 };
+    }
+  }
+
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  var state = loadState();
+
+  function dateStr(d) {
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  function recordActivity() {
+    var t = dateStr(new Date());
+    if (state.dates.indexOf(t) === -1) state.dates.push(t);
+    state.reps += 1;
+    saveState();
+    updateStreakChip();
+  }
+
+  function computeStreak() {
+    var set = {};
+    state.dates.forEach(function (d) { set[d] = true; });
+    var d = new Date();
+    if (!set[dateStr(d)]) {
+      d.setDate(d.getDate() - 1);
+      if (!set[dateStr(d)]) return 0;
+    }
+    var streak = 0;
+    while (set[dateStr(d)]) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function isMastered(deckId, idx) {
+    return !!(state.mastered[deckId] && state.mastered[deckId].indexOf(idx) !== -1);
+  }
+  function setMastered(deckId, idx, val) {
+    if (!state.mastered[deckId]) state.mastered[deckId] = [];
+    var arr = state.mastered[deckId];
+    var pos = arr.indexOf(idx);
+    if (val && pos === -1) arr.push(idx);
+    if (!val && pos !== -1) arr.splice(pos, 1);
+    saveState();
+  }
+  function deckMasteredCount(deckId) {
+    return (state.mastered[deckId] || []).length;
+  }
+  function getDeck() {
+    return DECKS.filter(function (d) { return d.id === currentDeckId; })[0];
+  }
+  function firstUnmasteredIndex(deckId) {
+    var deck = DECKS.filter(function (d) { return d.id === deckId; })[0];
+    for (var i = 0; i < deck.phrases.length; i++) {
+      if (!isMastered(deckId, i)) return i;
+    }
+    return 0;
+  }
+
+  var currentView = "decks";
+  var currentDeckId = null;
+  var currentIdx = 0;
+  var currentRate = 1;
+  var jaRevealed = false;
+
+  var cachedVoices = [];
+  function loadVoices() { cachedVoices = window.speechSynthesis.getVoices(); }
+  if ("speechSynthesis" in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+  function pickVoice() {
+    if (!cachedVoices.length && "speechSynthesis" in window) cachedVoices = window.speechSynthesis.getVoices();
+    var enUS = cachedVoices.filter(function (v) { return v.lang === "en-US"; });
+    var named = enUS.filter(function (v) { return /Samantha|Ava|Alex/i.test(v.name); })[0];
+    if (named) return named;
+    if (enUS[0]) return enUS[0];
+    var anyEn = cachedVoices.filter(function (v) { return v.lang && v.lang.indexOf("en") === 0; })[0];
+    return anyEn || null;
+  }
+
+  function setWaveActive(active) {
+    var el = document.getElementById("waveform");
+    if (el) el.classList.toggle("is-active", active);
+  }
+
+  function speak(text, rate) {
+    if (!("speechSynthesis" in window)) { flashMessage("この端末は音声再生に対応していません"); return; }
+    window.speechSynthesis.cancel();
+    var utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "en-US";
+    utter.rate = rate;
+    var voice = pickVoice();
+    if (voice) utter.voice = voice;
+    utter.onstart = function () { setWaveActive(true); };
+    utter.onend = function () { setWaveActive(false); };
+    utter.onerror = function () { setWaveActive(false); };
+    window.speechSynthesis.speak(utter);
+  }
+
+  var mediaRecorder = null, recordedChunks = [], recordedUrl = null;
+  var audioCtx = null, analyser = null, rafId = null, micStream = null;
+
+  function startAnalyser(stream) {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AC();
+      var source = audioCtx.createMediaStreamSource(stream);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 64;
+      source.connect(analyser);
+      var data = new Uint8Array(analyser.frequencyBinCount);
+      var bars = document.querySelectorAll("#waveform .bar");
+      (function tick() {
+        analyser.getByteFrequencyData(data);
+        bars.forEach(function (bar, i) {
+          var v = data[i % data.length] / 255;
+          bar.style.setProperty("--level", Math.max(0.15, v).toFixed(2));
+        });
+        rafId = requestAnimationFrame(tick);
+      })();
+    } catch (e) {}
+  }
+  function stopAnalyser() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    if (audioCtx) { try { audioCtx.close(); } catch (e) {} audioCtx = null; }
+    var bars = document.querySelectorAll("#waveform .bar");
+    bars.forEach(function (b) { b.style.removeProperty("--level"); });
+  }
+
+  function toggleRecording() {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      mediaRecorder.stop();
+      return;
+    }
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      flashMessage("この環境では録音に対応していません");
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      micStream = stream;
+      recordedChunks = [];
+      try {
+        mediaRecorder = new MediaRecorder(stream);
+      } catch (e) {
+        flashMessage("録音を開始できませんでした");
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        return;
+      }
+      mediaRecorder.ondataavailable = function (e) {
+        if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+      };
+      mediaRecorder.onstop = function () {
+        var blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || "audio/mp4" });
+        if (recordedUrl) URL.revokeObjectURL(recordedUrl);
+        recordedUrl = URL.createObjectURL(blob);
+        var btn = document.getElementById("recordBtn");
+        if (btn) { btn.classList.remove("is-recording"); btn.textContent = "● シャドーイング録音"; }
+        var pb = document.getElementById("playbackBtn");
+        if (pb) pb.disabled = false;
+        setWaveActive(false);
+        stopAnalyser();
+        micStream.getTracks().forEach(function (t) { t.stop(); });
+      };
+      mediaRecorder.start();
+      var btn = document.getElementById("recordBtn");
+      if (btn) { btn.classList.add("is-recording"); btn.textContent = "■ 停止"; }
+      setWaveActive(true);
+      startAnalyser(stream);
+    }).catch(function (err) {
+      var name = err && err.name ? err.name : "UnknownError";
+      var msg = err && err.message ? err.message : "";
+      flashMessage("マイクエラー[" + name + "]: " + msg);
+    });
+  }
+
+  function playRecorded() {
+    if (!recordedUrl) return;
+    var audio = new Audio(recordedUrl);
+    audio.play().catch(function () { flashMessage("再生に失敗しました"); });
+  }
+
+  var toastTimer = null;
+  function flashMessage(msg) {
+    var toast = document.getElementById("toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "toast";
+      toast.className = "toast";
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add("is-visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove("is-visible"); }, 2600);
+  }
+
+  function decksTemplate() {
+    var hintDismissed = localStorage.getItem(HINT_KEY);
+    var hintHtml = hintDismissed ? "" : (
+      '<div class="hint-banner">' +
+        "<p>共有ボタン &rarr;「ホーム画面に追加」で、アプリのように使えます。</p>" +
+        '<button class="hint-dismiss" data-action="dismiss-hint" aria-label="閉じる">&times;</button>' +
+      "</div>"
+    );
+    var rows = DECKS.map(function (deck, i) {
+      var total = deck.phrases.length;
+      var done = deckMasteredCount(deck.id);
+      var pct = Math.round((done / total) * 100);
+      var status = done === total ? "LANDED" : (done > 0 ? "BOARDING" : "SCHEDULED");
+      return (
+        '<li class="flight-row" data-deck="' + deck.id + '" tabindex="0" role="button" style="animation-delay:' + (i * 60) + 'ms">' +
+          '<span class="gate">' + deck.gate + "</span>" +
+          '<span class="flight-info">' +
+            '<span class="flight-name-en">' + deck.nameEn + "</span>" +
+            '<span class="flight-name-ja">' + deck.nameJa + "</span>" +
+          "</span>" +
+          '<span class="flight-progress">' +
+            '<span class="progress-track"><span class="progress-fill" style="width:' + pct + '%"></span></span>' +
+            '<span class="progress-num">' + done + "/" + total + "</span>" +
+          "</span>" +
+          '<span class="flight-status status-' + status.toLowerCase() + '">' + status + "</span>" +
+        "</li>"
+      );
+    }).join("");
+    return (
+      hintHtml +
+      '<div class="board-head">' +
+        '<span class="board-eyebrow">DEPARTURES</span>' +
+        '<h1 class="board-title">今日の便を選ぶ</h1>' +
+      "</div>" +
+      '<ul class="flight-list">' + rows + "</ul>"
+    );
+  }
+
+  function practiceTemplate() {
+    var deck = getDeck();
+    var phrase = deck.phrases[currentIdx];
+    var mastered = isMastered(currentDeckId, currentIdx);
+    var bars = "";
+    for (var i = 0; i < 5; i++) bars += '<span class="bar"></span>';
+    return (
+      '<div class="ticket">' +
+        '<div class="ticket-head">' +
+          '<button class="icon-btn" data-action="back" aria-label="ボードに戻る">&larr;</button>' +
+          '<span class="ticket-gate">' + deck.gate + " &middot; " + deck.nameJa + "</span>" +
+          '<span class="ticket-count">' + (currentIdx + 1) + " / " + deck.phrases.length + "</span>" +
+        "</div>" +
+        '<div class="ticket-body">' +
+          '<p class="phrase-en">' + escapeHtml(phrase.en) + "</p>" +
+          '<button class="reveal-btn" data-action="reveal">' + (jaRevealed ? "日本語を隠す &#9652;" : "日本語を見る &#9662;") + "</button>" +
+          '<p class="phrase-ja' + (jaRevealed ? "" : " is-hidden") + '">' + escapeHtml(phrase.ja) + "</p>" +
+          (phrase.tip ? '<p class="phrase-tip">&#128161; ' + escapeHtml(phrase.tip) + "</p>" : "") +
+        "</div>" +
+        '<div class="waveform" id="waveform">' + bars + "</div>" +
+        '<div class="speed-row" role="group" aria-label="再生速度">' +
+          '<button class="speed-btn' + (currentRate === 0.7 ? " is-active" : "") + '" data-speed="0.7">ゆっくり</button>' +
+          '<button class="speed-btn' + (currentRate === 1 ? " is-active" : "") + '" data-speed="1">標準</button>' +
+          '<button class="speed-btn' + (currentRate === 1.25 ? " is-active" : "") + '" data-speed="1.25">はやい</button>' +
+        "</div>" +
+        '<button class="play-btn" data-action="play">&#9654; 音声を聞く</button>' +
+        '<div class="shadow-row">' +
+          '<button class="record-btn" id="recordBtn" data-action="record">&#9679; シャドーイング録音</button>' +
+          '<button class="playback-btn" id="playbackBtn" data-action="playback"' + (recordedUrl ? "" : " disabled") + '>&#9654; 自分の声を聞く</button>' +
+        "</div>" +
+        '<div class="rate-row">' +
+          '<button class="rate-btn rate-again" data-action="again">もう一度</button>' +
+          '<button class="rate-btn rate-mastered' + (mastered ? " is-mastered" : "") + '" data-action="master">' + (mastered ? "マスター済み &#10003;" : "言えた &#10003;") + "</button>" +
+        "</div>" +
+        '<div class="nav-row">' +
+          '<button class="nav-btn" data-action="prev">&lsaquo; 前へ</button>' +
+          '<button class="nav-btn" data-action="next">次へ &rsaquo;</button>' +
+        "</div>" +
+      "</div>"
+    );
+  }
+
+  function progressTemplate() {
+    var totalMastered = 0;
+    Object.keys(state.mastered).forEach(function (k) { totalMastered += state.mastered[k].length; });
+    var streak = computeStreak();
+    var rows = DECKS.map(function (deck) {
+      var total = deck.phrases.length;
+      var done = deckMasteredCount(deck.id);
+      var pct = Math.round((done / total) * 100);
+      return (
+        '<li class="deck-progress-row">' +
+          '<span class="deck-progress-gate">' + deck.gate + "</span>" +
+          '<span class="deck-progress-name">' + deck.nameJa + "</span>" +
+          '<span class="progress-track"><span class="progress-fill" style="width:' + pct + '%"></span></span>' +
+          '<span class="deck-progress-num">' + done + "/" + total + "</span>" +
+        "</li>"
+      );
+    }).join("");
+    return (
+      '<div class="board-head">' +
+        '<span class="board-eyebrow">FLIGHT LOG</span>' +
+        '<h1 class="board-title">学習の記録</h1>' +
+      "</div>" +
+      '<div class="stat-cards">' +
+        '<div class="stat-card"><span class="stat-num">' + totalMastered + '</span><span class="stat-label">総マスター数</span></div>' +
+        '<div class="stat-card"><span class="stat-num">' + streak + '</span><span class="stat-label">連続日数</span></div>' +
+        '<div class="stat-card"><span class="stat-num">' + state.reps + '</span><span class="stat-label">総練習回数</span></div>' +
+      "</div>" +
+      '<ul class="deck-progress-list">' + rows + "</ul>" +
+      '<button class="reset-btn" data-action="reset">進捗をリセット</button>'
+    );
+  }
+
+  function updateStreakChip() {
+    var el = document.getElementById("streakNum");
+    if (el) el.textContent = computeStreak();
+  }
+
+  function updateTabbar() {
+    document.querySelectorAll(".tab").forEach(function (btn) {
+      var v = btn.getAttribute("data-view");
+      var active = (currentView === v) || (currentView === "practice" && v === "decks");
+      btn.classList.toggle("is-active", active);
+    });
+  }
+
+  function renderBoard() {
+    var board = document.getElementById("board");
+    if (currentView === "decks") board.innerHTML = decksTemplate();
+    else if (currentView === "practice") board.innerHTML = practiceTemplate();
+    else if (currentView === "progress") board.innerHTML = progressTemplate();
+    updateStreakChip();
+    updateTabbar();
+  }
+
+  function showView(view) {
+    currentView = view;
+    renderBoard();
+  }
+
+  function openDeck(deckId) {
+    currentDeckId = deckId;
+    currentIdx = firstUnmasteredIndex(deckId);
+    jaRevealed = false;
+    currentRate = 1;
+    recordedUrl = null;
+    currentView = "practice";
+    renderBoard();
+  }
+
+  function advance() {
+    var deck = getDeck();
+    currentIdx = (currentIdx + 1) % deck.phrases.length;
+    jaRevealed = false;
+    recordedUrl = null;
+    renderBoard();
+  }
+  function goPrev() {
+    var deck = getDeck();
+    currentIdx = (currentIdx - 1 + deck.phrases.length) % deck.phrases.length;
+    jaRevealed = false;
+    recordedUrl = null;
+    renderBoard();
+  }
+
+  function resetProgress() {
+    if (!window.confirm("学習の記録をすべてリセットしますか？この操作は取り消せません。")) return;
+    state = { mastered: {}, dates: [], reps: 0 };
+    saveState();
+    renderBoard();
+  }
+
+  document.getElementById("app").addEventListener("click", function (e) {
+    var row = e.target.closest(".flight-row");
+    if (row) { openDeck(row.getAttribute("data-deck")); return; }
+
+    var speedBtn = e.target.closest(".speed-btn");
+    if (speedBtn) { currentRate = parseFloat(speedBtn.getAttribute("data-speed")); renderBoard(); return; }
+
+    var actionEl = e.target.closest("[data-action]");
+    if (!actionEl) return;
+    var action = actionEl.getAttribute("data-action");
+    if (action === "back") { currentView = "decks"; renderBoard(); }
+    else if (action === "dismiss-hint") { localStorage.setItem(HINT_KEY, "1"); renderBoard(); }
+    else if (action === "reveal") { jaRevealed = !jaRevealed; renderBoard(); }
+    else if (action === "play") { var d = getDeck(); speak(d.phrases[currentIdx].en, currentRate); }
+    else if (action === "record") { toggleRecording(); }
+    else if (action === "playback") { playRecorded(); }
+    else if (action === "again") { recordActivity(); advance(); }
+    else if (action === "master") { setMastered(currentDeckId, currentIdx, true); recordActivity(); advance(); }
+    else if (action === "prev") { goPrev(); }
+    else if (action === "next") { advance(); }
+    else if (action === "reset") { resetProgress(); }
+  });
+
+  document.getElementById("tabbar").addEventListener("click", function (e) {
+    var btn = e.target.closest(".tab");
+    if (!btn) return;
+    showView(btn.getAttribute("data-view"));
+  });
+
+  document.getElementById("streakChip").addEventListener("click", function () {
+    showView("progress");
+  });
+
+  renderBoard();
+})();
+</script>
